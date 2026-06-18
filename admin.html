@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOTA Speaks — Admin Dashboard</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <div id="admin-app">
+
+    <!-- ===== LOGIN ===== -->
+    <div id="login-screen" class="admin-login">
+      <div class="admin-login__card">
+        <div class="admin-login__brand">
+          <span class="admin-login__nota">NOTA</span>
+          <span class="admin-login__speaks">Speaks</span>
+        </div>
+        <h1 class="admin-login__title">Admin Dashboard</h1>
+        <form id="login-form" class="admin-form" novalidate>
+          <div class="admin-form__group">
+            <label for="admin-username">Username</label>
+            <input type="text" id="admin-username" name="username" required autocomplete="username" placeholder="Enter username" />
+          </div>
+          <div class="admin-form__group">
+            <label for="admin-password">Password</label>
+            <input type="password" id="admin-password" name="password" required autocomplete="current-password" placeholder="Enter password" />
+          </div>
+          <div id="login-error" class="admin-form__error" hidden>Invalid credentials</div>
+          <button type="submit" class="admin-btn admin-btn--primary">
+            <span>Sign In</span>
+            <i class="ph ph-sign-in"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="dashboard-screen" class="admin-dashboard" hidden>
+      <header class="admin-header">
+        <div class="admin-header__brand">
+          <span class="admin-header__nota">NOTA</span>
+          <span class="admin-header__speaks">Speaks</span>
+          <span class="admin-header__badge">Admin</span>
+        </div>
+        <div class="admin-header__actions">
+          <a href="/" class="admin-btn admin-btn--ghost" target="_blank">
+            <i class="ph ph-arrow-square-out"></i>
+            <span>View Site</span>
+          </a>
+          <button id="btn-logout" class="admin-btn admin-btn--ghost">
+            <i class="ph ph-sign-out"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-main">
+        <!-- Stats -->
+        <div class="admin-stats">
+          <div class="admin-stat-card">
+            <i class="ph ph-users"></i>
+            <div class="admin-stat-card__info">
+              <span class="admin-stat-card__num" id="stat-join">0</span>
+              <span class="admin-stat-card__label">Join Submissions</span>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <i class="ph ph-envelope"></i>
+            <div class="admin-stat-card__info">
+              <span class="admin-stat-card__num" id="stat-contact">0</span>
+              <span class="admin-stat-card__label">Contact Messages</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="join">
+            <i class="ph ph-users"></i>
+            Join Us Submissions
+          </button>
+          <button class="admin-tab" data-tab="contact">
+            <i class="ph ph-envelope"></i>
+            Contact Messages
+          </button>
+        </div>
+
+        <!-- Join Submissions Table -->
+        <div id="tab-join" class="admin-tab-content active">
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Age</th>
+                  <th>Role</th>
+                  <th>Interest</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="join-table-body">
+                <tr class="admin-table__empty">
+                  <td colspan="8">No submissions yet</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Contact Messages Table -->
+        <div id="tab-contact" class="admin-tab-content">
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Subject</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="contact-table-body">
+                <tr class="admin-table__empty">
+                  <td colspan="6">No messages yet</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // ===== Admin Panel Logic =====
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'nota2026';
+
+    const loginScreen = document.getElementById('login-screen');
+    const dashboard = document.getElementById('dashboard-screen');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+
+    // Check existing session
+    if (sessionStorage.getItem('nota_admin_auth') === 'true') {
+      showDashboard();
+    }
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('admin-username').value;
+      const pass = document.getElementById('admin-password').value;
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        sessionStorage.setItem('nota_admin_auth', 'true');
+        loginError.setAttribute('hidden', '');
+        showDashboard();
+      } else {
+        loginError.removeAttribute('hidden');
+      }
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      sessionStorage.removeItem('nota_admin_auth');
+      dashboard.setAttribute('hidden', '');
+      loginScreen.style.display = '';
+      loginForm.reset();
+    });
+
+    // Tabs
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+      });
+    });
+
+    function showDashboard() {
+      loginScreen.style.display = 'none';
+      dashboard.removeAttribute('hidden');
+      loadSubmissions();
+    }
+
+    function loadSubmissions() {
+      // Load from localStorage
+      const joins = JSON.parse(localStorage.getItem('nota_join_submissions') || '[]');
+      const contacts = JSON.parse(localStorage.getItem('nota_contact_submissions') || '[]');
+
+      document.getElementById('stat-join').textContent = joins.length;
+      document.getElementById('stat-contact').textContent = contacts.length;
+
+      renderJoinTable(joins);
+      renderContactTable(contacts);
+    }
+
+    function renderJoinTable(data) {
+      const tbody = document.getElementById('join-table-body');
+      if (!data.length) {
+        tbody.innerHTML = '<tr class="admin-table__empty"><td colspan="8">No submissions yet</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map((item, idx) => `
+        <tr>
+          <td><strong>${esc(item.name)}</strong></td>
+          <td>${esc(item.email)}</td>
+          <td>${item.age || '—'}</td>
+          <td>${esc(item.role || '—')}</td>
+          <td>${esc(item.interest || '—')}</td>
+          <td class="admin-table__message">${esc(item.message || '—')}</td>
+          <td>${formatDate(item.submittedAt)}</td>
+          <td>
+            <button class="admin-btn-icon" onclick="deleteJoin(${idx})" title="Delete">
+              <i class="ph ph-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderContactTable(data) {
+      const tbody = document.getElementById('contact-table-body');
+      if (!data.length) {
+        tbody.innerHTML = '<tr class="admin-table__empty"><td colspan="6">No messages yet</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map((item, idx) => `
+        <tr>
+          <td><strong>${esc(item.name)}</strong></td>
+          <td>${esc(item.email)}</td>
+          <td>${esc(item.subject)}</td>
+          <td class="admin-table__message">${esc(item.message)}</td>
+          <td>${formatDate(item.submittedAt)}</td>
+          <td>
+            <button class="admin-btn-icon" onclick="deleteContact(${idx})" title="Delete">
+              <i class="ph ph-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.deleteJoin = function(idx) {
+      if (!confirm('Delete this submission?')) return;
+      const data = JSON.parse(localStorage.getItem('nota_join_submissions') || '[]');
+      data.splice(idx, 1);
+      localStorage.setItem('nota_join_submissions', JSON.stringify(data));
+      loadSubmissions();
+    };
+
+    window.deleteContact = function(idx) {
+      if (!confirm('Delete this message?')) return;
+      const data = JSON.parse(localStorage.getItem('nota_contact_submissions') || '[]');
+      data.splice(idx, 1);
+      localStorage.setItem('nota_contact_submissions', JSON.stringify(data));
+      loadSubmissions();
+    };
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      try {
+        return new Date(iso).toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      } catch {
+        return iso;
+      }
+    }
+  </script>
+</body>
+</html>

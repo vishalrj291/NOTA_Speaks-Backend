@@ -1,0 +1,278 @@
+/* ====================================================
+   NOTA Speaks — Base Styles
+   Design tokens, reset, typography, utility classes
+   ==================================================== */
+
+/* === CSS Custom Properties === */
+:root {
+  /* Core Brand */
+  --ink: hsl(220, 20%, 8%);
+  --paper: hsl(40, 20%, 96%);
+  --accent: hsl(32, 85%, 55%);
+  --accent-hover: hsl(32, 85%, 48%);
+  --accent-soft: hsl(32, 60%, 75%);
+  --accent-glow: hsla(32, 85%, 55%, 0.15);
+
+  /* Emotional Phases */
+  --phase-doubt: hsl(220, 15%, 7%);
+  --phase-question: hsl(220, 18%, 10%);
+  --phase-aware: hsl(215, 20%, 12%);
+  --phase-engage: hsl(210, 22%, 14%);
+  --phase-action: hsl(220, 18%, 9%);
+
+  /* Neutrals */
+  --grey-50: hsl(220, 10%, 98%);
+  --grey-100: hsl(220, 10%, 95%);
+  --grey-200: hsl(220, 10%, 85%);
+  --grey-300: hsl(220, 10%, 70%);
+  --grey-400: hsl(220, 10%, 50%);
+  --grey-500: hsl(220, 10%, 35%);
+  --grey-600: hsl(220, 10%, 20%);
+  --grey-700: hsl(220, 12%, 14%);
+  --grey-800: hsl(220, 14%, 10%);
+  --grey-900: hsl(220, 16%, 6%);
+
+  /* Functional */
+  --success: hsl(160, 60%, 45%);
+  --warning: hsl(40, 90%, 55%);
+  --error: hsl(0, 65%, 55%);
+
+  /* Surface */
+  --glass: hsla(220, 20%, 95%, 0.06);
+  --glass-strong: hsla(220, 20%, 95%, 0.1);
+  --glass-border: hsla(220, 20%, 80%, 0.1);
+  --glass-border-strong: hsla(220, 20%, 80%, 0.2);
+
+  /* Typography */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Fluid Type Scale */
+  --text-hero: clamp(3rem, 8vw, 7rem);
+  --text-display: clamp(2.5rem, 6vw, 5rem);
+  --text-heading: clamp(1.75rem, 3.5vw, 3rem);
+  --text-subhead: clamp(1.25rem, 2vw, 1.75rem);
+  --text-body-lg: clamp(1.05rem, 1.4vw, 1.25rem);
+  --text-body: clamp(0.95rem, 1.1vw, 1.0625rem);
+  --text-small: clamp(0.8rem, 1vw, 0.875rem);
+  --text-micro: clamp(0.7rem, 0.8vw, 0.75rem);
+
+  /* Line heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-loose: 1.8;
+
+  /* Letter spacing */
+  --tracking-tight: -0.03em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+  --tracking-caps: 0.14em;
+
+  /* Spacing (8px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-48: 12rem;
+  --space-64: 16rem;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Durations */
+  --duration-fast: 200ms;
+  --duration-normal: 400ms;
+  --duration-slow: 800ms;
+  --duration-reveal: 1200ms;
+
+  /* Borders */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Z-index scale */
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-nav: 100;
+  --z-modal: 1000;
+  --z-cursor: 9999;
+  --z-preloader: 10000;
+}
+
+/* === Reset === */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: auto; /* Lenis handles smoothing */
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  color: var(--grey-300);
+  background-color: var(--phase-doubt);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* === Typography === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--paper);
+}
+
+p {
+  line-height: var(--leading-normal);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+strong {
+  font-weight: 600;
+}
+
+em {
+  font-style: italic;
+}
+
+/* === Selection === */
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+::-moz-selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* === Focus === */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--grey-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--grey-600);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--grey-500);
+}
+
+/* === Skip Link === */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: var(--space-4);
+  z-index: var(--z-preloader);
+  padding: var(--space-3) var(--space-6);
+  background: var(--accent);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--text-small);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top var(--duration-fast) var(--ease-out-quart);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* === Images === */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* === Lists === */
+ul, ol {
+  list-style: none;
+}
+
+/* === Utility: Screen reader only === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* === Body loaded state === */
+body.loaded .preloader {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out-expo);
+}
