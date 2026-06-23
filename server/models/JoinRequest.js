@@ -10,4 +10,12 @@ module.exports = model('JoinRequest', new Schema({
   message: { type: String, default: '' },
   agreedToValues: { type: Boolean, default: true },
   otpVerified: { type: Boolean, default: false },
+
+  
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  }
+
 }, { timestamps: true }))

@@ -1,4 +1,5 @@
 require('dotenv').config()
+console.log("MONGODB_URI =", process.env.MONGODB_URI)
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -26,12 +27,13 @@ app.use(rateLimit({
 }))
 
 // ===== DATABASE =====
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/notaspeaks', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
+mongoose.connect(
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/notaspeaks'
+)
+.then(() => {
   console.log('✅ Connected to MongoDB')
-}).catch(err => {
+})
+.catch(err => {
   console.error('❌ MongoDB connection error:', err)
   process.exit(1)
 })
