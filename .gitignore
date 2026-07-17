@@ -1,6 +1,4 @@
 node_modules/
-**/node_modules/
 .env
-dist/
-client/dist/
-server/.env
+.env.*
+npm-debug.log*
