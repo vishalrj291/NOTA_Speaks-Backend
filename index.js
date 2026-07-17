@@ -1,4 +1,5 @@
 require('dotenv').config()
+console.log("MONGODB_URI =", process.env.MONGODB_URI)
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -7,6 +8,7 @@ const rateLimit = require('express-rate-limit')
 const path = require('path')
 
 const app = express()
+app.set('trust proxy', 1)
 const PORT = process.env.PORT || 5000
 
 // ===== MIDDLEWARE =====
@@ -19,11 +21,17 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // Global rate limiter
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 300,
-  message: { message: 'Too many requests. Please try again later.' }
-}))
+const limiter = rateLimit({
+    windowMs:15*60*1000,
+    max:300,
+    standardHeaders:true,
+    legacyHeaders:false,
+    message:{
+        message:"Too many requests. Please try again later."
+    }
+})
+
+app.use(limiter)
 
 // ===== DATABASE =====
 mongoose.connect(
@@ -58,5 +66,3 @@ app.use((err, req, res, next) => {
 
 // ===== START =====
 app.listen(PORT, () => console.log(`🚀 NOTA Speaks server running on port ${PORT}`))
-
-
